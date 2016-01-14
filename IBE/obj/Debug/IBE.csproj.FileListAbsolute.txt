@@ -1,0 +1,2 @@
+D:\Projekti\VSProjekti\IBE\IBE\bin\Debug\IBE.exe.config
+D:\Projekti\VSProjekti\IBE\IBE\obj\Debug\IBE.csprojResolveAssemblyReference.cache
