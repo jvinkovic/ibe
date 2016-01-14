@@ -12,11 +12,12 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using cryEC = Org.BouncyCastle.Crypto.EC;
+
+using cryEC = Org.BouncyCastle.Crypto;
 
 namespace IBE
 {
-    internal class Setup
+    public class Setup
     {
         // definirati što se koristi
         /*
@@ -40,16 +41,16 @@ namespace IBE
         private FpPoint P;
 
         // n
-        private int n = 3;
+        public int n { get; }
 
         // q
         private BigInteger q;
 
         // p
-        private BigInteger p;
+        public BigInteger p { get; }
 
         // krivulja
-        private FpCurve E;
+        public FpCurve E { get; }
 
         // random s iz Zq*
         private int s = 0;
@@ -59,10 +60,12 @@ namespace IBE
 
         public Setup()
         {
+            n = 3;
+
             do
             {
                 Random r = new Random();
-                s = r.Next(int.MinValue + 1, int.MaxValue - 1) * (r.Next(0, 1) * 2 - 1);
+                s = r.Next(1, int.MaxValue - 1);
             } while (s == 0);
 
             // p i q
@@ -77,12 +80,14 @@ namespace IBE
             // P
             BigInteger x1 = new BigInteger("4", 10);
             BigInteger y1 = new BigInteger("1630203008552496124843674615123983630541969261591546559209027208557", 10);
-            FpFieldElement x = new FpFieldElement(q, y1);
-            FpFieldElement y = new FpFieldElement(q, y1);
+            FpFieldElement x = (FpFieldElement)E.FromBigInteger(x1); // new FpFieldElement(q, x1);
+            FpFieldElement y = (FpFieldElement)E.FromBigInteger(y1); // new FpFieldElement(q, y1);
 
             P = new FpPoint(E, x, y);
 
-            Ppub = (FpPoint)P.Multiply(new BigInteger(s.ToString(), 10));
+            BigInteger k = new BigInteger(s.ToString(), 10);
+
+            Ppub = (FpPoint)P.Multiply(k);
         }
 
         public FpPoint GetP()
@@ -90,22 +95,22 @@ namespace IBE
             return P;
         }
 
-        public BigInteger Exctract(string ID)
+        public FpPoint GetPpub()
         {
-            // H1 je sha256(ID) mod p
-            SHA256Managed crypt = new SHA256Managed();
-            StringBuilder hash = new StringBuilder();
-            byte[] crypto = crypt.ComputeHash(Encoding.UTF8.GetBytes(ID), 0, Encoding.UTF8.GetByteCount(ID));
-            foreach (byte theByte in crypto)
-            {
-                hash.Append(theByte.ToString("x2"));
-            }
+            return Ppub;
+        }
 
-            BigInteger hsh = new BigInteger(hash.ToString(), 16);
-            // hash mod p
-            BigInteger Qid = hsh.DivideAndRemainder(p)[1];
+        public FpPoint Exctract(string ID)
+        {
+            //  y^2 = x^3 + 117050x^2 + x
+            BigInteger x = GeneralFunctions.H1hash(ID, p);
+            BigInteger y = x.Pow(3).Add(x.Pow(2).Multiply(new BigInteger("117050", 10))).Add(x).Pow(2).ModInverse(p);
 
-            BigInteger d_id = Qid.Multiply(new BigInteger(s.ToString(), 10));
+            FpFieldElement x_Qid = new FpFieldElement(q, x);
+            FpFieldElement y_Qid = new FpFieldElement(q, y);
+            FpPoint Qid = new FpPoint(E, x_Qid, y_Qid);
+
+            FpPoint d_id = (FpPoint)Qid.Multiply(new BigInteger(s.ToString(), 10));
 
             // privatni ključ
             return d_id;

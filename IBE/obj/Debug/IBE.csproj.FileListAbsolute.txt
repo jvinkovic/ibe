@@ -1,2 +1,8 @@
 D:\Projekti\VSProjekti\IBE\IBE\bin\Debug\IBE.exe.config
+D:\Projekti\VSProjekti\IBE\IBE\bin\Debug\IBE.exe
+D:\Projekti\VSProjekti\IBE\IBE\bin\Debug\IBE.pdb
+D:\Projekti\VSProjekti\IBE\IBE\bin\Debug\BouncyCastle.Crypto.dll
+D:\Projekti\VSProjekti\IBE\IBE\obj\Debug\IBE.exe
+D:\Projekti\VSProjekti\IBE\IBE\obj\Debug\IBE.pdb
 D:\Projekti\VSProjekti\IBE\IBE\obj\Debug\IBE.csprojResolveAssemblyReference.cache
+D:\Projekti\VSProjekti\IBE\IBE\bin\Debug\BouncyCastle.Crypto.pdb
