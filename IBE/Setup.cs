@@ -8,22 +8,23 @@ namespace IBE
     {
         // definirati što se koristi
         /*
-            E - krivulja M-221 - Montgomery oblik - y^2 = x^3+117050x^2+x - http://safecurves.cr.yp.to/equation.html
-            q - p^n
-            p - prost broj - za M-221 je 2^221 - 3 = 3369993333393829974333376885877453834204643052817571560137951281149
-            Fq - polje nad kojim se računa - G2
-            E(Fq) - krivulja nad poljem Fq - G1
+            E - krivulja secp256k1 - y^2 = x^3+0*x+7 - http://safecurves.cr.yp.to/equation.html
+            q - p /// p^n
+            p - prost broj - za secp256k1 je 2^256 - 2^32 - 977  = 115792089237316195423570985008687907853269984665640564039457584007908834671663
+            Fq - polje nad kojim se računa
+            E(Fq) - grupa u kojoj je krivulja E nad poljem Fq
+            k - red grupe E(Fq) - 115792089237316195423570985008687907852837564279074904382605163141518161494337
             H1 - sha256(<string>) mod p -> x točka krivulje; y se izračuna
-            H2 - ripemd-120 : točka iz polja -> niz bita mod 3 - n=3
+            H2 - ripemd-120 : točka iz polja -> niz bita mod p
             e - Weilovo uparivanje
-            n - 3
             P - random točka sa krivulje (x1,y1) - početna točka
             Ppub - JAVNI KLJUČ - Ppub = sP
             s - MASTER TAJNI KLJUČ - random iz Zq i != 0
         */
 
         // random P iz E(Fq) - G1
-        // za M-221 se preporuča: P = (4, 1630203008552496124843674615123983630541969261591546559209027208557)
+        // za M-221 se preporuča: P = (55066263022277343669578718895168534326250603453777594175500187360389116729240,
+        //                             32670510020758816978083085130507043184471273380659243275938904335757337482424)
         // BigInteger(<broj>,<baza>)
         private FpPoint P;
 
@@ -56,17 +57,18 @@ namespace IBE
             } while (s == 0);
 
             // p i q
-            p = new BigInteger("3369993333393829974333376885877453834204643052817571560137951281149", 10);
-            q = p.Pow(n);
+            p = new BigInteger("115792089237316195423570985008687907853269984665640564039457584007908834671663", 10);
+            //q = p.Pow(n);
+            q = p;
 
-            // E - krivulja M - 221 - Montgomery oblik - y ^ 2 = x ^ 3 + 117050x ^ 2 + x
-            BigInteger a = new BigInteger("117050", 10);
-            BigInteger b = new BigInteger("1", 10);
+            // E - krivulja secp256k1 - y ^ 2 = x ^ 3 + 0*x + 7
+            BigInteger a = new BigInteger("0", 10);
+            BigInteger b = new BigInteger("7", 10);
             E = new FpCurve(q, a, b);
 
             // P
-            BigInteger x1 = new BigInteger("4", 10);
-            BigInteger y1 = new BigInteger("1630203008552496124843674615123983630541969261591546559209027208557", 10);
+            BigInteger x1 = new BigInteger("55066263022277343669578718895168534326250603453777594175500187360389116729240", 10);
+            BigInteger y1 = new BigInteger("32670510020758816978083085130507043184471273380659243275938904335757337482424", 10);
             FpFieldElement x = (FpFieldElement)E.FromBigInteger(x1); // new FpFieldElement(q, x1);
             FpFieldElement y = (FpFieldElement)E.FromBigInteger(y1); // new FpFieldElement(q, y1);
 

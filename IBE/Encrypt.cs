@@ -10,23 +10,21 @@ namespace IBE
         private BigInteger prim;
         private FpPoint P;
         private FpPoint Ppub;
-        private int n;
         private FpCurve E;
 
-        public Encrypt(string id, FpPoint tocka, FpPoint Ppublic, BigInteger prost, int num, FpCurve curve)
+        public Encrypt(string id, FpPoint tocka, FpPoint Ppublic, BigInteger prost, FpCurve curve)
         {
             ID = id;
             P = tocka;
             Ppub = Ppublic;
             prim = prost;
-            n = num;
             E = curve;
         }
 
         public Cypher GetCypher(string message)
         {
             BigInteger x = GeneralFunctions.H1hash(ID, prim);
-            BigInteger y = x.Pow(3).Add(x.Pow(2).Multiply(new BigInteger("117050", 10))).Add(x).Pow(2).ModInverse(prim);
+            BigInteger y = x.Pow(3).Add(new BigInteger("7", 10)).Pow(2).ModInverse(prim);
             FpFieldElement x_Qid = new FpFieldElement(E.Q, x);
             FpFieldElement y_Qid = new FpFieldElement(E.Q, y);
             FpPoint Qid = new FpPoint(E, x_Qid, y_Qid);
@@ -41,16 +39,17 @@ namespace IBE
             FpPoint rP = (FpPoint)P.Multiply(new BigInteger(r.ToString(), 10));
 
             BigInteger gid = GeneralFunctions.Pair(Qid, Ppub);
+            gid = gid.ModPow(new BigInteger(r.ToString(), 10), prim);
 
             char[] M = message.ToCharArray();
             char[] cArray = new char[M.Length];
-            char[] hash = GeneralFunctions.H2hash(gid, n).ToCharArray();
+            char[] hash = GeneralFunctions.H2hash(gid, prim).ToCharArray();
             for (int i = 0; i < message.Length; i++)
             {
-                cArray[i] = (char)(M[i] ^ hash[i % n]);
+                cArray[i] = (char)(M[i] ^ hash[i % hash.Length]);
             }
 
-            string c = cArray.ToString();
+            string c = new String(cArray);
 
             return new Cypher { U = rP, V = c };
         }

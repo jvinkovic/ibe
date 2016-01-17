@@ -26,9 +26,9 @@ namespace IBE
             return x;
         }
 
-        public static string H2hash(BigInteger qid, int n)
+        public static string H2hash(BigInteger qid, BigInteger p)
         {
-            // H2 je RiPEMD-120: točka iz polja -> niz bita mod 3 - n=3
+            // H2 je RiPEMD-120: točka iz polja -> niz bita mod p
             string tocka = qid.ToString();
 
             RIPEMD160Managed crypt = new RIPEMD160Managed();
@@ -41,15 +41,14 @@ namespace IBE
 
             BigInteger hsh = new BigInteger(hash.ToString(), 16);
             // hash mod n
-            BigInteger c = hsh.DivideAndRemainder(new BigInteger(n.ToString(), 10))[1];
+            BigInteger c = hsh.DivideAndRemainder(p)[1];
 
             return c.ToString();
         }
 
-        internal static BigInteger Pair(FpPoint a, FpPoint b)
+        internal static BigInteger Pair(FpPoint Q, FpPoint P)
         {
-            // TODO: UPARIVANJE
-            throw new NotImplementedException();
+            // TODO: napravi jebeno uparivanje
         }
     }
 }

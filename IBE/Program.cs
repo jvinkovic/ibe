@@ -15,15 +15,15 @@ namespace IBE
             // tajni ključ
             FpPoint d_id = setup.Exctract("ime.prezime@mail.hr");
 
-            Encrypt e = new Encrypt("ime.prezime@mail.hr", setup.GetP(), setup.GetPpub(), setup.p, setup.n, setup.E);
+            Encrypt e = new Encrypt("ime.prezime@mail.hr", setup.GetP(), setup.GetPpub(), setup.p, setup.E);
 
-            string poruka = "porati posluku";
+            string poruka = "moram porati posluku";
             Cypher c = e.GetCypher(poruka);
 
             Console.Out.WriteLine("poruka: \"" + poruka + "\"");
             Console.Out.WriteLine("sifrat: \"" + c.V + "\"");
 
-            Decrypt d = new Decrypt(d_id, setup.n);
+            Decrypt d = new Decrypt(d_id, setup.p);
             string msg = d.GetMessage(c);
 
             Console.Out.WriteLine("decoded: \"" + msg + "\"");
