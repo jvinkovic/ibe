@@ -23,10 +23,13 @@ namespace IBE
         */
 
         // random P iz E(Fq) - G1
-        // za M-221 se preporuča: P = (55066263022277343669578718895168534326250603453777594175500187360389116729240,
+        // za secp256k1 se preporuča: P = (55066263022277343669578718895168534326250603453777594175500187360389116729240,
         //                             32670510020758816978083085130507043184471273380659243275938904335757337482424)
         // BigInteger(<broj>,<baza>)
         private FpPoint P;
+
+        // k
+        public BigInteger k { get; }
 
         // n
         public int n { get; }
@@ -61,6 +64,8 @@ namespace IBE
             //q = p.Pow(n);
             q = p;
 
+            this.k = new BigInteger("115792089237316195423570985008687907852837564279074904382605163141518161494337", 10);
+
             // E - krivulja secp256k1 - y ^ 2 = x ^ 3 + 0*x + 7
             BigInteger a = new BigInteger("0", 10);
             BigInteger b = new BigInteger("7", 10);
@@ -74,9 +79,9 @@ namespace IBE
 
             P = new FpPoint(E, x, y);
 
-            BigInteger k = new BigInteger(s.ToString(), 10);
+            BigInteger mtp = new BigInteger(s.ToString(), 10);
 
-            Ppub = (FpPoint)P.Multiply(k);
+            Ppub = (FpPoint)P.Multiply(mtp);
         }
 
         public FpPoint GetP()

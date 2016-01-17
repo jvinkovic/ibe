@@ -8,16 +8,18 @@ namespace IBE
     {
         private FpPoint d_id;
         private BigInteger p;
+        private BigInteger k;
 
-        public Decrypt(FpPoint did, BigInteger prim)
+        public Decrypt(FpPoint did, BigInteger prim, BigInteger stp)
         {
             d_id = did;
             p = prim;
+            k = stp;
         }
 
         public string GetMessage(Cypher c)
         {
-            BigInteger eid = GeneralFunctions.Pair(d_id, c.U);
+            BigInteger eid = GeneralFunctions.Pair(d_id, c.U, k, p);
 
             char[] msg = c.V.ToCharArray();
             char[] m = new char[msg.Length];

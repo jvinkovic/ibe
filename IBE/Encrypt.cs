@@ -11,14 +11,16 @@ namespace IBE
         private FpPoint P;
         private FpPoint Ppub;
         private FpCurve E;
+        private BigInteger k;
 
-        public Encrypt(string id, FpPoint tocka, FpPoint Ppublic, BigInteger prost, FpCurve curve)
+        public Encrypt(string id, FpPoint tocka, FpPoint Ppublic, BigInteger prost, FpCurve curve, BigInteger stp)
         {
             ID = id;
             P = tocka;
             Ppub = Ppublic;
             prim = prost;
             E = curve;
+            k = stp;
         }
 
         public Cypher GetCypher(string message)
@@ -38,7 +40,7 @@ namespace IBE
 
             FpPoint rP = (FpPoint)P.Multiply(new BigInteger(r.ToString(), 10));
 
-            BigInteger gid = GeneralFunctions.Pair(Qid, Ppub);
+            BigInteger gid = GeneralFunctions.Pair(Qid, Ppub, k, prim);
             gid = gid.ModPow(new BigInteger(r.ToString(), 10), prim);
 
             char[] M = message.ToCharArray();
