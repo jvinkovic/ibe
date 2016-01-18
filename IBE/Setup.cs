@@ -1,6 +1,7 @@
 ﻿using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Math.EC;
 using System;
+using System.IO;
 
 namespace IBE
 {
@@ -64,7 +65,7 @@ namespace IBE
             //q = p.Pow(n);
             q = p;
 
-            this.k = new BigInteger("115792089237316195423570985008687907852837564279074904382605163141518161494337", 10);
+            k = new BigInteger("115792089237316195423570985008687907852837564279074904382605163141518161494337", 10);
 
             // E - krivulja secp256k1 - y ^ 2 = x ^ 3 + 0*x + 7
             BigInteger a = new BigInteger("0", 10);
@@ -82,6 +83,8 @@ namespace IBE
             BigInteger mtp = new BigInteger(s.ToString(), 10);
 
             Ppub = (FpPoint)P.Multiply(mtp);
+
+            File.WriteAllText("mk", s.ToString() + Environment.NewLine);
         }
 
         public FpPoint GetP()
@@ -94,8 +97,14 @@ namespace IBE
             return Ppub;
         }
 
-        public FpPoint Exctract(string ID)
+        public FpPoint Exctract(string ID, bool decrypt = false)
         {
+            if (decrypt)
+            {
+                string sStr = File.ReadAllText("mk");
+                s = int.Parse(sStr);
+            }
+
             //  y^2 = x^3 + 117050x^2 + x
             BigInteger x = GeneralFunctions.H1hash(ID, p);
             BigInteger y = x.Pow(3).Add(x.Pow(2).Multiply(new BigInteger("117050", 10))).Add(x).Pow(2).ModInverse(p);
