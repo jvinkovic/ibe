@@ -13,7 +13,7 @@ namespace IBE
             string poruka = "moram porati posluku";
             Cypher sifrat;
 
-            if (args.Length < 3)
+            if (args.Length < 2)
             {
                 test();
                 Console.WriteLine("\n");
@@ -24,13 +24,13 @@ namespace IBE
             // namjesti postavke prvo
             Setup setup = new Setup();
 
-            if (args[1] == "-f")
+            if (args[0] == "-f")
             {
-                string put = args[2];
-                if (!File.Exists(args[1]))
+                string put = args[1];
+                if (!File.Exists(put))
                 {
                     poruka = File.ReadAllText(put);
-                    if (args.Length != 4)
+                    if (args.Length != 3)
                     {
                         upute();
                         return;
@@ -54,25 +54,25 @@ namespace IBE
 
             if (args[1] == "-d")
             {
-                if (args[2] == "-f" && args.Length == 7)
+                if (args[1] == "-f" && args.Length == 6)
                 {
-                    string put = args[3];
+                    string put = args[2];
                     sif = File.ReadAllText(put);
 
                     id = args[args.Length - 1];
-                    xs = args[4];
-                    ys = args[5];
+                    xs = args[3];
+                    ys = args[4];
                 }
-                else if (args.Length > 7 || args.Length != 6)
+                else if (args.Length > 6 || args.Length != 5)
                 {
                     upute();
                     return;
                 }
                 else
                 {
-                    sif = args[2];
-                    xs = args[3];
-                    ys = args[4];
+                    sif = args[1];
+                    xs = args[2];
+                    ys = args[3];
                     id = args[args.Length - 1];
                 }
 
